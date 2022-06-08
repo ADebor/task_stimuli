@@ -479,6 +479,7 @@ class CozmoFirstTaskPsychoPyNUC(CozmoBaseTask):
         self.tracking = tracking
         if self.tracking:
             self.frame_timestamp_pos_pycozmo = []
+            cv2.namedWindow("Tracking", cv2.WINDOW_NORMAL)
         else:
             self.frame_timestamp_pycozmo = []
         self.frame_timestamp_psychopy = []
@@ -610,6 +611,7 @@ class CozmoFirstTaskPsychoPyNUC(CozmoBaseTask):
         self.game_vis_stim.image = obs[1]
         self.game_vis_stim.draw(exp_win)
         if self.tracking and tracking_frame is not None:
+            tracking_frame = cv2.imdecode(tracking_frame, cv2.IMREAD_UNCHANGED)
             cv2.imshow("Tracking", tracking_frame)
             cv2.waitKey(1)
 
@@ -663,8 +665,8 @@ class CozmoFirstTaskPsychoPyNUC(CozmoBaseTask):
         img_raw = np.array(0)
         img_tracking_raw = np.array(0)
         while not self.done:
-            time.sleep(1 / COZMO_FPS / 8)
-
+            #time.sleep(1 / COZMO_FPS / 8)
+            time.sleep(1 / 15)
             received = bytearray()
             try:
                 sz = int.from_bytes(self.sock_recv.recv(3), byteorder='big')    # TODO change if not long enough
@@ -736,7 +738,8 @@ class CozmoFirstTaskPsychoPyNUC(CozmoBaseTask):
         self.send_timer.reset()
 
         while not self.done and conn:
-            time.sleep(1 / COZMO_FPS / 4)
+            #time.sleep(1 / COZMO_FPS / 4)
+            time.sleep(1 / COZMO_FPS)
             self.lock_send.acquire()
             actions = copy.deepcopy(self.actions_to_send)
             self.lock_send.release()
